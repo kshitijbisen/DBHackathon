@@ -1,3 +1,9 @@
+// SVG icon for INR text
+const InrTextIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 32 16" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <text x="0" y="13" fontFamily="Arial, Helvetica, sans-serif" fontSize="14" fill="currentColor">INR</text>
+  </svg>
+);
 import React from 'react';
 import { Target, Plus, RefreshCcw } from 'lucide-react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
@@ -38,8 +44,8 @@ const GoalTracker: React.FC = () => {
     });
   };
 
-  const totalTargetAmount = goals.reduce((sum, goal) => sum + goal.targetAmount, 0);
-  const totalCurrentAmount = goals.reduce((sum, goal) => sum + goal.currentAmount, 0);
+  const totalTargetAmount = goals.reduce((sum: number, goal: Goal) => sum + goal.targetAmount, 0);
+  const totalCurrentAmount = goals.reduce((sum: number, goal: Goal) => sum + goal.currentAmount, 0);
   const overallProgress = (totalCurrentAmount / totalTargetAmount) * 100;
 
   return (
@@ -51,8 +57,8 @@ const GoalTracker: React.FC = () => {
         </div>
         <div className="text-right">
           <p className="text-sm text-gray-500">Overall Progress</p>
-          <p className="text-xl font-semibold">
-            ${totalCurrentAmount.toFixed(2)} / ${totalTargetAmount.toFixed(2)}
+                <p className="text-xl font-semibold">
+                  <InrTextIcon className="h-5 w-8 mr-1 text-gray-700 inline" />&nbsp;{totalCurrentAmount.toFixed(2)} / <InrTextIcon className="h-5 w-8 mr-1 text-gray-700 inline" />&nbsp;{totalTargetAmount.toFixed(2)}
             <span className="text-sm text-gray-500 ml-2">
               ({isNaN(overallProgress) ? 0 : overallProgress.toFixed(1)}%)
             </span>
@@ -77,14 +83,14 @@ const GoalTracker: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700">Target Amount</label>
           <div className="mt-1 relative rounded-md shadow-sm">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span className="text-gray-500 sm:text-sm">$</span>
+              <InrTextIcon className="h-4 w-7 text-gray-500 sm:text-sm" />
             </div>
             <input
               type="number"
               required
               value={targetAmount}
               onChange={(e) => setTargetAmount(e.target.value)}
-              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 pr-12 sm:text-sm border-gray-300 rounded-md"
               placeholder="0.00"
               step="0.01"
             />
@@ -95,14 +101,14 @@ const GoalTracker: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700">Current Amount</label>
           <div className="mt-1 relative rounded-md shadow-sm">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span className="text-gray-500 sm:text-sm">$</span>
+              <InrTextIcon className="h-4 w-7 text-gray-500 sm:text-sm" />
             </div>
             <input
               type="number"
               required
               value={currentAmount}
               onChange={(e) => setCurrentAmount(e.target.value)}
-              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+            className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 pr-12 sm:text-sm border-gray-300 rounded-md"
               placeholder="0.00"
               step="0.01"
             />
@@ -138,7 +144,7 @@ const GoalTracker: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-4">
-          {goals.map((goal) => {
+          {goals.map((goal: Goal) => {
             const progress = (goal.currentAmount / goal.targetAmount) * 100;
             const daysLeft = Math.ceil(
               (new Date(goal.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
@@ -154,8 +160,8 @@ const GoalTracker: React.FC = () => {
                 </div>
                 <div className="mb-2">
                   <div className="flex justify-between text-sm text-gray-600 mb-1">
-                    <span>${goal.currentAmount.toFixed(2)} saved</span>
-                    <span>${goal.targetAmount.toFixed(2)} goal</span>
+                    <span><InrTextIcon className="h-4 w-7 mr-1 inline text-gray-700" />&nbsp;{goal.currentAmount.toFixed(2)} saved</span>
+                    <span><InrTextIcon className="h-4 w-7 mr-1 inline text-gray-700" />&nbsp;{goal.targetAmount.toFixed(2)} goal</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
                     <div

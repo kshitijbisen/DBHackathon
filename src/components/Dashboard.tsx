@@ -1,6 +1,14 @@
+// SVG icon for INR text
+const InrTextIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 32 16" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <text x="0" y="13" fontFamily="Arial, Helvetica, sans-serif" fontSize="14" fill="currentColor">INR</text>
+  </svg>
+);
 import React from 'react';
+import type { Transaction, Investment } from '../types';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
-import { DollarSign, TrendingUp, Wallet, Target } from 'lucide-react';
+import { Target } from 'lucide-react';
+
 import { useQuery } from '@tanstack/react-query';
 import { fetchTransactions, fetchInvestments, fetchGoals } from '../api';
 import TransactionForm from './TransactionForm';
@@ -26,15 +34,15 @@ const Dashboard: React.FC = () => {
   });
 
   const totalIncome = transactions
-    .filter(t => t.type === 'income')
-    .reduce((sum, t) => sum + t.amount, 0);
+    .filter((t: Transaction) => t.type === 'income')
+    .reduce((sum: number, t: Transaction) => sum + t.amount, 0);
 
   const totalExpenses = transactions
-    .filter(t => t.type === 'expense')
-    .reduce((sum, t) => sum + t.amount, 0);
+    .filter((t: Transaction) => t.type === 'expense')
+    .reduce((sum: number, t: Transaction) => sum + t.amount, 0);
 
   const totalInvestments = investments.reduce(
-    (sum, inv) => sum + inv.shares * inv.currentPrice,
+    (sum: number, inv: Investment) => sum + inv.shares * inv.currentPrice,
     0
   );
 
@@ -59,12 +67,12 @@ const Dashboard: React.FC = () => {
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <DollarSign className="h-6 w-6 text-gray-400" />
+                  <InrTextIcon className="h-6 w-8 text-gray-400" />
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Total Income</dt>
-                    <dd className="text-lg font-semibold text-gray-900">${totalIncome.toFixed(2)}</dd>
+                    <dd className="text-lg font-semibold text-gray-900 flex items-center"><InrTextIcon className="h-5 w-8 mr-1 text-gray-700" />{totalIncome.toFixed(2)}</dd>
                   </dl>
                 </div>
               </div>
@@ -75,12 +83,12 @@ const Dashboard: React.FC = () => {
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <Wallet className="h-6 w-6 text-gray-400" />
+                  <InrTextIcon className="h-6 w-8 text-gray-400" />
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Total Expenses</dt>
-                    <dd className="text-lg font-semibold text-gray-900">${totalExpenses.toFixed(2)}</dd>
+                    <dd className="text-lg font-semibold text-gray-900 flex items-center"><InrTextIcon className="h-5 w-8 mr-1 text-gray-700" />{totalExpenses.toFixed(2)}</dd>
                   </dl>
                 </div>
               </div>
@@ -91,12 +99,12 @@ const Dashboard: React.FC = () => {
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <TrendingUp className="h-6 w-6 text-gray-400" />
+                  <InrTextIcon className="h-6 w-8 text-gray-400" />
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Investments Value</dt>
-                    <dd className="text-lg font-semibold text-gray-900">${totalInvestments.toFixed(2)}</dd>
+                    <dd className="text-lg font-semibold text-gray-900 flex items-center"><InrTextIcon className="h-5 w-8 mr-1 text-gray-700" />{totalInvestments.toFixed(2)}</dd>
                   </dl>
                 </div>
               </div>
@@ -112,8 +120,8 @@ const Dashboard: React.FC = () => {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Net Worth</dt>
-                    <dd className="text-lg font-semibold text-gray-900">
-                      ${(totalIncome - totalExpenses + totalInvestments).toFixed(2)}
+                    <dd className="text-lg font-semibold text-gray-900 flex items-center">
+                      <InrTextIcon className="h-5 w-8 mr-1 text-gray-700" />{(totalIncome - totalExpenses + totalInvestments).toFixed(2)}
                     </dd>
                   </dl>
                 </div>
@@ -138,7 +146,7 @@ const Dashboard: React.FC = () => {
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {pieData.map((entry, index) => (
+                    {pieData.map((entry: any, index: number) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
