@@ -1,3 +1,9 @@
+// SVG icon for INR text
+const InrTextIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 32 16" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <text x="0" y="13" fontFamily="Arial, Helvetica, sans-serif" fontSize="14" fill="currentColor">INR</text>
+  </svg>
+);
 import React from 'react';
 import { TrendingUp, Plus, RefreshCcw } from 'lucide-react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
@@ -67,12 +73,12 @@ const InvestmentTracker: React.FC = () => {
         <div className="flex space-x-4">
           <div className="text-right">
             <p className="text-sm text-gray-500">Total Portfolio Value</p>
-            <p className="text-xl font-semibold">${totalValue.toFixed(2)}</p>
+            <p className="text-xl font-semibold flex items-center"><InrTextIcon className="h-5 w-8 mr-1 text-gray-700" />{' '}{totalValue.toFixed(2)}</p>
           </div>
           <div className="text-right">
             <p className="text-sm text-gray-500">Total Gain/Loss</p>
             <p className={`text-xl font-semibold ${totalGainLoss >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              ${totalGainLoss.toFixed(2)} ({totalGainLossPercentage.toFixed(2)}%)
+              <InrTextIcon className="h-4 w-7 mr-1 inline text-gray-700" />{' '}{totalGainLoss.toFixed(2)} ({totalGainLossPercentage.toFixed(2)}%)
             </p>
           </div>
         </div>
@@ -108,14 +114,14 @@ const InvestmentTracker: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700">Purchase Price</label>
           <div className="mt-1 relative rounded-md shadow-sm">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span className="text-gray-500 sm:text-sm">$</span>
+              <InrTextIcon className="h-4 w-7 text-gray-500 sm:text-sm" />
             </div>
             <input
               type="number"
               required
               value={purchasePrice}
               onChange={(e) => setPurchasePrice(e.target.value)}
-              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 pr-12 sm:text-sm border-gray-300 rounded-md"
               placeholder="0.00"
               step="0.01"
             />
@@ -179,16 +185,16 @@ const InvestmentTracker: React.FC = () => {
                       {investment.shares.toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      ${investment.purchasePrice.toFixed(2)}
+                      <InrTextIcon className="h-4 w-7 mr-1 inline text-gray-700" />{' '}{investment.purchasePrice.toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      ${investment.currentPrice.toFixed(2)}
+                      <InrTextIcon className="h-4 w-7 mr-1 inline text-gray-700" />{' '}{investment.currentPrice.toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      ${marketValue.toFixed(2)}
+                      <InrTextIcon className="h-4 w-7 mr-1 inline text-gray-700" />{' '}{marketValue.toFixed(2)}
                     </td>
                     <td className={`px-6 py-4 whitespace-nowrap text-sm ${gainLoss >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      ${gainLoss.toFixed(2)} ({gainLossPercentage.toFixed(2)}%)
+                      <InrTextIcon className="h-4 w-7 mr-1 inline text-gray-700" />{' '}{gainLoss.toFixed(2)} ({gainLossPercentage.toFixed(2)}%)
                     </td>
                   </tr>
                 );

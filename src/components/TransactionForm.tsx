@@ -1,4 +1,11 @@
+// SVG icon for INR text
+const InrTextIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 32 16" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <text x="0" y="13" fontFamily="Arial, Helvetica, sans-serif" fontSize="14" fill="currentColor">INR</text>
+  </svg>
+);
 import React from 'react';
+
 import { Plus } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createTransaction } from '../api';
@@ -65,14 +72,14 @@ const TransactionForm: React.FC = () => {
         <label className="block text-sm font-medium text-gray-700">Amount</label>
         <div className="mt-1 relative rounded-md shadow-sm">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span className="text-gray-500 sm:text-sm">$</span>
+            <InrTextIcon className="h-5 w-8 text-gray-500 sm:text-sm" />
           </div>
           <input
             type="number"
             required
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+            className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 pr-12 sm:text-sm border-gray-300 rounded-md"
             placeholder="0.00"
           />
         </div>
