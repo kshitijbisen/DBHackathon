@@ -1,6 +1,7 @@
 import React from 'react';
 import { TrendingUp, TrendingDown, AlertTriangle, Target, Calendar, DollarSign } from 'lucide-react';
 import { Expense } from '../../types';
+import { getCurrencyIcon, getCurrencySymbol } from '../../utils/currency';
 
 interface SpendingInsightsProps {
   expenses: Expense[];
@@ -14,6 +15,8 @@ const SpendingInsights: React.FC<SpendingInsightsProps> = ({ expenses, className
   const lastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
   const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
+  const currencyIcon=getCurrencyIcon();
+
   const thisWeekExpenses = expenses.filter(e => new Date(e.date) >= lastWeek);
   const lastWeekExpenses = expenses.filter(e => {
     const date = new Date(e.date);
@@ -22,6 +25,7 @@ const SpendingInsights: React.FC<SpendingInsightsProps> = ({ expenses, className
   
   const thisWeekTotal = thisWeekExpenses.reduce((sum, e) => sum + e.amount, 0);
   const lastWeekTotal = lastWeekExpenses.reduce((sum, e) => sum + e.amount, 0);
+  const currencySymbol = getCurrencySymbol();
   const weeklyChange = lastWeekTotal > 0 ? ((thisWeekTotal - lastWeekTotal) / lastWeekTotal) * 100 : 0;
 
   // Category analysis
@@ -56,7 +60,7 @@ const SpendingInsights: React.FC<SpendingInsightsProps> = ({ expenses, className
       icon: weeklyChange > 0 ? TrendingUp : TrendingDown,
       title: 'Weekly Spending Trend',
       description: `Your spending ${weeklyChange > 0 ? 'increased' : 'decreased'} by ${Math.abs(weeklyChange).toFixed(1)}% this week`,
-      value: `$${thisWeekTotal.toFixed(2)}`,
+      value: `${currencySymbol}${thisWeekTotal.toFixed(2)}`,
       change: `${weeklyChange > 0 ? '+' : ''}${weeklyChange.toFixed(1)}%`
     },
     {
@@ -64,7 +68,7 @@ const SpendingInsights: React.FC<SpendingInsightsProps> = ({ expenses, className
       icon: Target,
       title: 'Top Spending Category',
       description: `${topCategories[0]?.[0] || 'No data'} accounts for most of your expenses`,
-      value: `$${topCategories[0]?.[1]?.toFixed(2) || '0'}`,
+      value: `${currencySymbol}${topCategories[0]?.[1]?.toFixed(2) || '0'}`,
       change: `${topCategories.length > 0 ? ((topCategories[0][1] / Object.values(categorySpending).reduce((a, b) => a + b, 0)) * 100).toFixed(1) : 0}%`
     },
     {
@@ -72,7 +76,7 @@ const SpendingInsights: React.FC<SpendingInsightsProps> = ({ expenses, className
       icon: Calendar,
       title: 'Daily Average',
       description: 'Your average daily spending pattern',
-      value: `$${avgDailySpending.toFixed(2)}`,
+      value: `${currencySymbol}${avgDailySpending.toFixed(2)}`,
       change: `${Object.keys(dailySpending).length} days tracked`
     }
   ];
@@ -83,7 +87,7 @@ const SpendingInsights: React.FC<SpendingInsightsProps> = ({ expenses, className
       icon: AlertTriangle,
       title: 'High Spending Alert',
       description: `You had unusually high spending on ${new Date(highSpendingDays[0][0]).toLocaleDateString()}`,
-      value: `$${highSpendingDays[0][1].toFixed(2)}`,
+      value: `${currencySymbol}${highSpendingDays[0][1].toFixed(2)}`,
       change: `${((highSpendingDays[0][1] / avgDailySpending - 1) * 100).toFixed(0)}% above average`
     });
   }
@@ -151,7 +155,7 @@ const SpendingInsights: React.FC<SpendingInsightsProps> = ({ expenses, className
       {/* Quick Actions */}
       <div className="bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl p-4 text-white">
         <h4 className="font-semibold mb-3 flex items-center">
-          <DollarSign className="w-4 h-4 mr-2" />
+          {currencyIcon}
           Smart Recommendations
         </h4>
         <div className="space-y-2 text-sm">

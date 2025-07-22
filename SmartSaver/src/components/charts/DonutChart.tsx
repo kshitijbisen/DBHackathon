@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getCurrencySymbol } from '../../utils/currency';
 
 interface DonutData {
   category: string;
@@ -28,6 +29,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
   }
 
   const total = data.reduce((sum, item) => sum + item.amount, 0);
+  const currencySymbol=getCurrencySymbol()
   const colors = [
     '#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444',
     '#8B5A2B', '#6B46C1', '#059669', '#DC2626', '#7C2D12'
@@ -124,7 +126,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
           textAnchor="middle"
           className="text-sm font-bold fill-gray-900"
         >
-          ${total.toFixed(0)}
+          {currencySymbol+total.toFixed(0)}
         </text>
       </svg>
       
@@ -133,7 +135,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
         <div className="absolute top-0 left-full ml-4 bg-black bg-opacity-80 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap z-10">
           <div className="font-medium">{hoveredSegment}</div>
           <div className="text-xs opacity-90">
-            ${segments.find(s => s.category === hoveredSegment)?.amount.toFixed(2)} 
+            {currencySymbol}{segments.find(s => s.category === hoveredSegment)?.amount.toFixed(2)} 
             ({segments.find(s => s.category === hoveredSegment)?.percentage.toFixed(1)}%)
           </div>
         </div>

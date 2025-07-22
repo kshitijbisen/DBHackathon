@@ -38,11 +38,22 @@ TO authenticated
 WITH CHECK (bucket_id = 'avatars');
 
 -- Allow public read access to avatars
-CREATE POLICY "Public can view avatars"
-ON storage.objects
-FOR SELECT
-TO public
-USING (bucket_id = 'avatars');
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE polname = 'Public can view avatars'
+      AND tablename = 'objects'
+  ) THEN
+    CREATE POLICY "Public can view avatars"
+    ON storage.objects
+    FOR SELECT
+    TO public
+    USING (bucket_id = 'avatars');
+  END IF;
+END
+$$;
+
 
 -- Allow users to update their own avatars
 CREATE POLICY "Users can update own avatars"
