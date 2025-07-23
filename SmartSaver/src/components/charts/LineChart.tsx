@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { getCurrencySymbol } from '../../utils/currency';
 interface DataPoint {
   date: string;
   amount: number;
@@ -24,7 +24,7 @@ const LineChart: React.FC<LineChartProps> = ({
       </div>
     );
   }
-
+const currencySymbol = getCurrencySymbol();
   // Filter out invalid data points and ensure we have valid numbers
   const validData = data.filter(point => 
     point && 
@@ -170,10 +170,10 @@ const LineChart: React.FC<LineChartProps> = ({
         {isFinite(maxAmount) && isFinite(minAmount) && (
           <>
             <text x="10" y={padding} textAnchor="start" fill="#6b7280" fontSize="12">
-              ${maxAmount.toFixed(0)}
+              {currencySymbol +maxAmount.toFixed(0)}
             </text>
             <text x="10" y={height - padding + 5} textAnchor="start" fill="#6b7280" fontSize="12">
-              ${minAmount.toFixed(0)}
+              {currencySymbol +minAmount.toFixed(0)}
             </text>
           </>
         )}

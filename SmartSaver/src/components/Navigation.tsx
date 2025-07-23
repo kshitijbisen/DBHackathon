@@ -89,7 +89,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChange }) =>
                 
                 {/* Profile Image Only */}
                 <img 
-                  src="/photo_2025-05-19_22-40-08.jpg" 
+                  src="/download.png" 
                   alt="Profile"
                   className="w-8 h-8 rounded-lg object-cover cursor-pointer hover:ring-2 hover:ring-purple-300 transition-all duration-200"
                   onClick={() => handlePageChange('profile')}
@@ -158,7 +158,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChange }) =>
                   className="flex flex-col items-center space-y-2 hover:opacity-80 transition-opacity"
                 >
                   <img 
-                    src="/photo_2025-05-19_22-40-08.jpg" 
+                    src="/download.png" 
                     alt="Profile"
                     className="w-16 h-16 rounded-xl object-cover ring-2 ring-purple-200"
                   />

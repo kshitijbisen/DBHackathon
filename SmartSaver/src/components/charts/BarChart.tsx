@@ -1,4 +1,5 @@
 import React from 'react';
+import { getCurrencySymbol } from '../../utils/currency';
 
 interface BarData {
   category: string;
@@ -21,6 +22,7 @@ const BarChart: React.FC<BarChartProps> = ({ data, height = 300 }) => {
   }
 
   const maxAmount = Math.max(...data.map(d => d.amount));
+  const currencySymbol=getCurrencySymbol()
   const colors = [
     '#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444',
     '#8B5A2B', '#6B46C1', '#059669', '#DC2626', '#7C2D12'
@@ -39,7 +41,7 @@ const BarChart: React.FC<BarChartProps> = ({ data, height = 300 }) => {
                 {item.category}
               </span>
               <span className="text-sm font-semibold text-gray-900">
-                ${item.amount.toFixed(2)}
+                {currencySymbol}{item.amount.toFixed(2)}
               </span>
             </div>
             <div className="relative">

@@ -370,7 +370,7 @@ const Profile: React.FC = () => {
               {/* Profile Image */}
               <div className="relative mb-4 md:mb-0">
                 <img 
-                  src={profile?.avatar_url || "/photo_2025-05-19_22-40-08.jpg"} 
+                  src={profile?.avatar_url || "/download.png"} 
                   alt="Profile"
                   className="w-32 h-32 rounded-2xl object-cover border-4 border-white shadow-lg"
                 />

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { TrendingUp, DollarSign, Target, Calendar, BarChart3, PieChart as PieChartIcon, LineChart as LineChartIcon, Filter, Download } from 'lucide-react';
+import { TrendingUp, DollarSign, Target, Calendar, BarChart3, PieChart as PieChartIcon, LineChart as LineChartIcon, Filter, Download, CurrencyIcon } from 'lucide-react';
 import PieChart from '../components/PieChart';
 import LineChart from '../components/charts/LineChart';
 import BarChart from '../components/charts/BarChart';
@@ -9,6 +9,7 @@ import DrillDownModal from '../components/analytics/DrillDownModal';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import { getFinancialTip } from '../utils/mockAI';
 import { useExpenses } from '../hooks/useExpenses';
+import { getCurrencySymbol,getCurrencyIcon } from '../utils/currency';
 
 const Dashboard: React.FC = () => {
   const { expenses, loading } = useExpenses();
@@ -24,6 +25,8 @@ const Dashboard: React.FC = () => {
       quarter: new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000),
       year: new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000)
     };
+
+
 
     const filteredExpenses = expenses.filter(expense => 
       new Date(expense.date) >= ranges[timeRange]
@@ -62,7 +65,8 @@ const Dashboard: React.FC = () => {
       monthlySpent, 
       categoryBreakdown, 
       trendData,
-      filteredExpenses 
+      filteredExpenses,
+    
     };
   }, [expenses, timeRange]);
 
@@ -70,7 +74,8 @@ const Dashboard: React.FC = () => {
     '#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444',
     '#8B5A2B', '#6B46C1', '#059669', '#DC2626', '#7C2D12'
   ];
-
+  const currencyIcon = getCurrencyIcon();
+const currencySymbol = getCurrencySymbol();
   const financialTip = getFinancialTip(summary);
 
   const handleCategoryClick = (category: string) => {
@@ -149,11 +154,11 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Spent</p>
-                <p className="text-2xl font-bold text-gray-900">${summary.totalSpent.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-gray-900">{currencySymbol}{summary.totalSpent.toFixed(2)}</p>
                 <p className="text-xs text-gray-500 mt-1">Last {timeRange}</p>
               </div>
               <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-white" />
+             {currencyIcon}
               </div>
             </div>
           </div>
@@ -162,7 +167,7 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">This Week</p>
-                <p className="text-2xl font-bold text-gray-900">${summary.weeklySpent.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-gray-900">{currencySymbol}{summary.weeklySpent.toFixed(2)}</p>
                 <p className="text-xs text-gray-500 mt-1">7 days</p>
               </div>
               <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
@@ -175,7 +180,7 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">This Month</p>
-                <p className="text-2xl font-bold text-gray-900">${summary.monthlySpent.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-gray-900">{currencySymbol}{summary.monthlySpent.toFixed(2)}</p>
                 <p className="text-xs text-gray-500 mt-1">30 days</p>
               </div>
               <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center">
@@ -347,7 +352,7 @@ const Dashboard: React.FC = () => {
                           {expense.category}
                         </button>
                       </td>
-                      <td className="py-3 px-4 font-semibold text-gray-900">${expense.amount.toFixed(2)}</td>
+                      <td className="py-3 px-4 font-semibold text-gray-900">{currencySymbol}{expense.amount.toFixed(2)}</td>
                       <td className="py-3 px-4 text-gray-600">{expense.notes || '-'}</td>
                     </tr>
                   ))}
