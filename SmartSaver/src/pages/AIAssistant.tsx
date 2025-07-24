@@ -4,6 +4,7 @@ import { ChatMessage } from '../types';
 import { generateAIFinancialAdvice } from '../services/aiService';
 import { useExpenses } from '../hooks/useExpenses';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
+import { getCurrencyIcon,getCurrencySymbol } from '../utils/currency';
 
 const AIAssistant: React.FC = () => {
   const { expenses } = useExpenses();
@@ -18,7 +19,8 @@ const AIAssistant: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  const currencySymbol = getCurrencySymbol();
+  const currencyIcon = getCurrencyIcon();
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -27,73 +29,13 @@ const AIAssistant: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Enhanced message formatting function
+  // Simplified formatter for unstructured messages
   const formatAIMessage = (text: string) => {
-    const sections = text.split(/\*\*(.*?)\*\*/g);
-    const elements: JSX.Element[] = [];
-    
-    for (let i = 0; i < sections.length; i++) {
-      const section = sections[i];
-      
-      if (i % 2 === 1) {
-        elements.push(
-          <div key={i} className="font-bold text-gray-900 text-lg mb-3 flex items-center">
-            {section.includes('Financial Snapshot') && <TrendingUp className="w-5 h-5 mr-2 text-purple-500" />}
-            {section.includes('Smart Money') && <Sparkles className="w-5 h-5 mr-2 text-blue-500" />}
-            {section.includes('Challenge') && <DollarSign className="w-5 h-5 mr-2 text-green-500" />}
-            {section}
-          </div>
-        );
-      } else if (section.trim()) {
-        const lines = section.split('\n').filter(line => line.trim());
-        
-        lines.forEach((line, lineIndex) => {
-          const trimmedLine = line.trim();
-          
-          if (trimmedLine.startsWith('📈') || trimmedLine.startsWith('💡') || trimmedLine.startsWith('🎯')) {
-            elements.push(
-              <div key={`${i}-${lineIndex}`} className="font-semibold text-gray-800 text-base mb-2 mt-4">
-                {trimmedLine}
-              </div>
-            );
-          } else if (trimmedLine.startsWith('•')) {
-            elements.push(
-              <div key={`${i}-${lineIndex}`} className="flex items-start space-x-2 mb-2">
-                <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-gray-700 text-sm leading-relaxed">{trimmedLine.substring(1).trim()}</span>
-              </div>
-            );
-          } else if (trimmedLine.match(/^\d+\./)) {
-            const [number, ...rest] = trimmedLine.split('.');
-            elements.push(
-              <div key={`${i}-${lineIndex}`} className="flex items-start space-x-3 mb-3">
-                <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-xs font-bold">{number}</span>
-                </div>
-                <div className="flex-1">
-                  <span className="text-gray-800 font-medium">{rest.join('.').split(':')[0]}:</span>
-                  <span className="text-gray-600 ml-1">{rest.join('.').split(':').slice(1).join(':')}</span>
-                </div>
-              </div>
-            );
-          } else if (trimmedLine && !trimmedLine.startsWith('Need specific')) {
-            elements.push(
-              <p key={`${i}-${lineIndex}`} className="text-gray-700 mb-3 leading-relaxed">
-                {trimmedLine}
-              </p>
-            );
-          } else if (trimmedLine.startsWith('Need specific')) {
-            elements.push(
-              <div key={`${i}-${lineIndex}`} className="mt-4 p-3 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
-                <p className="text-purple-700 font-medium text-sm">{trimmedLine}</p>
-              </div>
-            );
-          }
-        });
-      }
-    }
-    
-    return <div className="space-y-1">{elements}</div>;
+    return (
+      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+        {text}
+      </p>
+    );
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -112,8 +54,8 @@ const AIAssistant: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const aiResponse = await generateAIFinancialAdvice(inputText, expenses);
-      
+      const aiResponse = await generateAIFinancialAdvice(inputText);
+
       const aiMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         text: aiResponse,
@@ -148,7 +90,6 @@ const AIAssistant: React.FC = () => {
     setInputText(prompt);
   };
 
-  // Calculate financial summary for display
   const totalSpent = expenses.reduce((sum, exp) => sum + exp.amount, 0);
   const categoriesCount = new Set(expenses.map(exp => exp.category)).size;
   const recentExpenses = expenses.slice(0, 5);
@@ -156,7 +97,6 @@ const AIAssistant: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 py-8">
       <div className="max-w-6xl mx-auto px-4">
-        {/* Enhanced Header with AI Bot */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-6 mb-6">
             <div className="relative">
@@ -204,23 +144,27 @@ const AIAssistant: React.FC = () => {
                       message.isUser ? 'flex-row-reverse space-x-reverse' : ''
                     }`}
                   >
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      message.isUser 
-                        ? 'bg-gradient-to-r from-purple-500 to-blue-500' 
-                        : 'bg-gradient-to-r from-purple-500 to-blue-500'
-                    }`}>
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        message.isUser
+                          ? 'bg-gradient-to-r from-purple-500 to-blue-500'
+                          : 'bg-gradient-to-r from-purple-500 to-blue-500'
+                      }`}
+                    >
                       {message.isUser ? (
                         <User className="w-4 h-4 text-white" />
                       ) : (
                         <Bot className="w-4 h-4 text-white" />
                       )}
                     </div>
-                    
-                    <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
-                      message.isUser
-                        ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
-                        : 'bg-gray-50 text-gray-900'
-                    }`}>
+
+                    <div
+                      className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
+                        message.isUser
+                          ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
+                          : 'bg-gray-50 text-gray-900'
+                      }`}
+                    >
                       <div className={`text-sm ${
                         message.isUser ? 'text-white' : 'text-gray-900'
                       }`}>
@@ -238,7 +182,7 @@ const AIAssistant: React.FC = () => {
                     </div>
                   </div>
                 ))}
-                
+
                 {isLoading && (
                   <div className="flex items-start space-x-3">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
@@ -296,9 +240,8 @@ const AIAssistant: React.FC = () => {
             </div>
           </div>
 
-          {/* Financial Summary Sidebar */}
+          {/* Sidebar */}
           <div className="space-y-6">
-            {/* AI Bot Profile */}
             <div className="bg-white rounded-xl p-6 shadow-lg">
               <div className="text-center mb-4">
                 <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
@@ -323,7 +266,6 @@ const AIAssistant: React.FC = () => {
               </div>
             </div>
 
-            {/* AI Capabilities */}
             <div className="bg-white rounded-xl p-6 shadow-lg">
               <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
                 <Sparkles className="w-5 h-5 mr-2 text-purple-500" />
@@ -339,7 +281,6 @@ const AIAssistant: React.FC = () => {
               </ul>
             </div>
 
-            {/* Your Financial Data */}
             <div className="bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl p-6 text-white">
               <h3 className="font-semibold mb-4 flex items-center">
                 <TrendingUp className="w-5 h-5 mr-2" />
@@ -348,7 +289,7 @@ const AIAssistant: React.FC = () => {
               <div className="space-y-3 text-sm text-purple-100">
                 <div className="flex justify-between">
                   <span>Total Expenses:</span>
-                  <span className="font-semibold text-white">${totalSpent.toFixed(2)}</span>
+                  <span className="font-semibold text-white">{currencySymbol}{totalSpent.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Transactions:</span>
@@ -361,10 +302,9 @@ const AIAssistant: React.FC = () => {
               </div>
             </div>
 
-            {/* Recent Expenses */}
             <div className="bg-white rounded-xl p-6 shadow-lg">
               <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
-                <DollarSign className="w-5 h-5 mr-2 text-green-500" />
+                
                 Recent Expenses
               </h3>
               {recentExpenses.length === 0 ? (
@@ -377,7 +317,7 @@ const AIAssistant: React.FC = () => {
                         <p className="font-medium text-gray-900">{expense.category}</p>
                         <p className="text-gray-500">{new Date(expense.date).toLocaleDateString()}</p>
                       </div>
-                      <span className="font-semibold text-gray-900">${expense.amount.toFixed(2)}</span>
+                      <span className="font-semibold text-gray-900">{currencySymbol}{expense.amount.toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
